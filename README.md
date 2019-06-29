@@ -1,7 +1,7 @@
 ## India Voter Turnout 2014 Elections Map
 This project was formed due to an interest in working with data from the recent 2019 elections. The data was taken from the Election Commission of India site. Actually, the most recent data on voter turnout there is from 2014, which is what led to the development of this map and is what I used. The data file I used from the Election Commission of India site contains information for each of India's then 543 parliamentary constituencies (PC's).
 
-I am planning on doing a second, related project, that uses a web-scraping app to obtain data on which parties were victories in each constituency and then uses this data to create an electoral map, colored not according to voter turnout but according to the party elected in each constituency.
+I am planning on doing a second, related project, that uses a web-scraping app to obtain data on which parties were victorious in each constituency and then uses this data to create an electoral map, colored not according to voter turnout but according to the party elected in each constituency.
 
 ## Map Loading
 

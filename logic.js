@@ -26,7 +26,7 @@ var color = d3.scaleThreshold()
 var div = d3.select("body").append("div")
             .attr("class", "tooltip")
 
-// If loading only parliamentary constituency background map
+// If loading parliamentary constituencies GeoJSON
 /*d3.json("data/india_pc_map_2014_merged.geojson").then(function(data) {
     svg.selectAll("path")
         .data(data.features)
@@ -39,30 +39,37 @@ var div = d3.select("body").append("div")
 d3.csv("data/india_pc_voter_turnout_2014.csv").then(function(data) {
             
     // Load GeoJSON data of parliamentary constituencies (PC's)
-    d3.json("data/india_pc_map_2014_merged.geojson").then(function(json) {
-            
+    d3.json("data/india_pc_map_2014_merged.json").then(function(json) {
+        
+        console.log(json)
+        
+        var parliamentaryConstituencies = topojson.feature(json, json.objects.india_pc_map_2014_merged).features;
+        
+        console.log(parliamentaryConstituencies);
+        
         // Bind GeoJSON data to voter turnout data
         for (var i = 0; i < data.length; i++) {
             var dataState = data[i].state;
             var dataPCNo = data[i].pcNo;
             var dataPCName = data[i].pcName;
             var dataValue = parseFloat(data[i].voterTurnout);
-            for (var j = 0; j < json.features.length; j++) {
-				var jsonState = json.features[j].properties.state;
-                var jsonPCNo = json.features[j].properties.pc;
+            for (var j = 0; j < parliamentaryConstituencies.length; j++) {
+				var jsonState = parliamentaryConstituencies[j].properties.state;
+                var jsonPCNo = parliamentaryConstituencies[j].properties.pc;
 				if (dataState == jsonState && dataPCNo == jsonPCNo) {
-                    json.features[j].properties.voterTurnout = dataValue;
-                    json.features[j].properties.pcName = dataPCName;
+                    parliamentaryConstituencies[j].properties.voterTurnout = dataValue;
+                    /*parliamentaryConstituencies[j].properties.pcName = dataPCName;*/
                     break;
 				}
             }		
         }
         
         // Draw the map
-        svg.selectAll("path")
-            .data(json.features)
+        svg.selectAll(".pcs")
+            .data(parliamentaryConstituencies)
             .enter()
             .append("path")
+            .attr("class", "pcs")
             .attr("d", path)
             .style("fill", function(d) {
                 var value = d.properties.voterTurnout;
@@ -73,7 +80,7 @@ d3.csv("data/india_pc_voter_turnout_2014.csv").then(function(data) {
             // Mouse events
             .on("mouseover", function(d) {
                 d3.select(this).style("opacity", 1);
-                div.text(d.properties.pcName + ": " + d.properties.voterTurnout + "%")
+                div.text(d.properties.pc_name + ": " + d.properties.voterTurnout + "%")
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY -30) + "px");
             })
