@@ -1,63 +1,66 @@
 // Define width and height of the svg element
-var width = 960;
-var height = 500;
+var width = 1200;
+var height = 600;
         
 //Define map projection
-var projection = d3.geoMercator().translate([-600, 600]).scale(800);
+var projection = d3.geoMercator().translate([-700, 700]).scale(1000);
 
 //Define path generator
 var path = d3.geoPath().projection(projection);
-        
-// Create color scale with 5 buckets for creating choropleth map (taken from ColorBrewer)
-var color = d3.scaleQuantize().range(["#f6eff7","#d0d1e6","#a6bddb","#67a9cf","#1c9099", "#016c59"]);
-        
+            
 // Add the SVG element
 var svg = d3.select("body")
             .append("svg")
             .attr("width", width)
             .attr("height", height);
+
+// Add color scale and labels for legend
+var color_domain = [58, 66, 74, 82]
+var legend_labels = ["50-58%", "58-66%", "66-74%", "74-82%", "Over 82%"]
+var color = d3.scaleThreshold()
+                .domain(color_domain)
+                .range(["#ffffcc","#a1dab4","#41b6c4","#2c7fb8","#253494"]);
         
-d3.json("india_pc_2019_simplified.geojson").then(function(data) {
+/*d3.json("data/india_pc_map_2014_merged.geojson").then(function(data) {
     svg.selectAll("path")
         .data(data.features)
         .enter()
         .append("path")
         .attr("d", path)
-})
+})*/
 
-/*// Load CSV data from the US Department of Agriculture, then set input domain for color scale and begin working with GeoJSON data within this function
-d3.csv("us-ag-productivity.csv").then(function(data) {
-    color.domain([
-        d3.min(data, function(d) {return d.value; }),
-        d3.max(data, function(d) {return d.value; })
-    ]);
+// Draw choropleth map in single function. First load voter turnout data
+d3.csv("data/india_pc_voter_turnout_2014.csv").then(function(data) {
             
-    // Load GeoJSON data. Here we will merge the agricultural data into the GeoJSON, because we can only bind one set of data to elements at a time. Hence, we will bind all the data at the same time
-    d3.json("us-states.json").then(function(json) {
+    // Load GeoJSON data
+    d3.json("data/india_pc_map_2014_merged.geojson").then(function(json) {
             
-        // For each state, find the GeoJSON element with the same name. Then take that state's data value and place it under json.features[j].properties.value
+        // Bind GeoJSON data to voter turnout data
         for (var i = 0; i < data.length; i++) {
             var dataState = data[i].state;
-            var dataValue = parseFloat(data[i].value);
+            var dataPCNo = data[i].pcNo;
+            var dataValue = parseFloat(data[i].voterTurnout);
             for (var j = 0; j < json.features.length; j++) {
-				var jsonState = json.features[j].properties.name;
-				if (dataState == jsonState) {
-				    json.features[j].properties.value = dataValue;
+				var jsonState = json.features[j].properties.state;
+                var jsonPCNo = json.features[j].properties.pc;
+				if (dataState == jsonState && dataPCNo == jsonPCNo) {
+				    json.features[j].properties.voterTurnout = dataValue;
 				    break;
 				}
             }		
         }
                 
-        // Lastly, create the paths with a dynamic style: state color is based off of the agricultural data. If no value exists, the area is given a color of light gray ("#ccc")
+        // Draw the map
         svg.selectAll("path")
             .data(json.features)
             .enter()
             .append("path")
             .attr("d", path)
             .style("fill", function(d) {
-                var value = d.properties.value;
+                var value = d.properties.voterTurnout;
                 if (value) {return color(value); } else {return "#ccc"; }
-            });
+            })
+            .style("opacity", 0.8);
                 
     });
-});*/
+});
