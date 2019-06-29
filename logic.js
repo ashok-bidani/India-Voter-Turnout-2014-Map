@@ -15,12 +15,14 @@ var svg = d3.select("body")
             .attr("height", height);
 
 // Add color scale and labels for legend
-var color_domain = [58, 66, 74, 82]
-var legend_labels = ["50-58%", "58-66%", "66-74%", "74-82%", "Over 82%"]
+var colorDomain = [58, 66, 74, 82]
+var extendedDomain = [50, 58, 66, 74, 82]
+var legendLabels = ["50-58%", "58-66%", "66-74%", "74-82%", "Over 82%"]
 var color = d3.scaleThreshold()
-                .domain(color_domain)
+                .domain(colorDomain)
                 .range(["#ffffcc","#a1dab4","#41b6c4","#2c7fb8","#253494"]);
         
+// If loading only parliamentary constituency background map
 /*d3.json("data/india_pc_map_2014_merged.geojson").then(function(data) {
     svg.selectAll("path")
         .data(data.features)
@@ -64,3 +66,24 @@ d3.csv("data/india_pc_voter_turnout_2014.csv").then(function(data) {
                 
     });
 });
+
+var legend = svg.selectAll ("g.legend")
+                .data(extendedDomain)
+                .enter()
+                .append("g")
+                .attr("class", "legend");
+
+var legendSquare = 20;
+
+legend.append("rect")
+    .attr("x", width - 100)
+    .attr("y", function(d, i) {return height - (i*legendSquare) - 2*legendSquare; })
+    .attr("width", legendSquare)
+    .attr("height", legendSquare)
+    .style("fill", function(d, i) {return color(d); })
+    .style("opacity", 0.8);
+
+legend.append("text")
+    .attr("x", width - 70)
+    .attr("y", function(d, i) {return height - (i*legendSquare) - legendSquare - 4; })
+    .text(function(d, i) {return legendLabels[i]; });
