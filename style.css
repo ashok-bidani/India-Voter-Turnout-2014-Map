@@ -3,6 +3,24 @@ h2 {
     text-align: center;
 }
 
+path {
+    stroke: white;
+    stroke-width: 0.5px;
+}
+
+.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 150px;                  
+  height: 25px;                 
+  padding: 2px;             
+  font-size: 10px;     
+  background: #FFFFE0;
+  border: 1px;      
+  border-radius: 8px;           
+  pointer-events: none;         
+}  
+
 .legend {
     font-size: 12px;
 }
