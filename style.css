@@ -8,11 +8,19 @@ path {
     stroke-width: 0.5px;
 }
 
-.tooltip {   
+body {
+  font-family: Arial, sans-serif;
+}
+
+.legend {
+    font-size: 12px;
+}
+
+div.tooltip {   
   position: absolute;           
   text-align: center;           
-  width: 150px;                  
-  height: 25px;                 
+  width: 140px;                  
+  height: 15px;                 
   padding: 2px;             
   font-size: 10px;     
   background: #FFFFE0;
@@ -20,7 +28,3 @@ path {
   border-radius: 8px;           
   pointer-events: none;         
 }  
-
-.legend {
-    font-size: 12px;
-}

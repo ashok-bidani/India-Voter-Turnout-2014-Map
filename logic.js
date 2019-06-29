@@ -73,7 +73,7 @@ d3.csv("data/india_pc_voter_turnout_2014.csv").then(function(data) {
             // Mouse events
             .on("mouseover", function(d) {
                 d3.select(this).style("opacity", 1);
-                div.text(d.properties.pcName + ": " + d.properties.voterTurnout)
+                div.text(d.properties.pcName + ": " + d.properties.voterTurnout + "%")
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY -30) + "px");
             })
